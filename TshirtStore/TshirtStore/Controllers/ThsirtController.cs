@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Confluent.Kafka;
+using Kafka.Services;
 using Microsoft.AspNetCore.Mvc;
 using ThirtStore.Models.Models;
 using ThirtStore.Models.Models.Requests;
@@ -22,7 +23,7 @@ namespace TshirtStore.Controllers
         [HttpGet(nameof(GetAllThsirts))]
         public async Task<IActionResult> GetAllThsirts()
         {
-            return Ok( await _tshirtService.GetAllTshirts());
+            return Ok(await _tshirtService.GetAllTshirts());
         }
 
         [HttpPost(nameof(AddTshirt))]
@@ -30,7 +31,13 @@ namespace TshirtStore.Controllers
         {
             var result = await _tshirtService.AddThirt(tshirt);
 
-            return Ok(result);
+            var addedTshirt = (await _tshirtService.GetAllTshirts()).LastOrDefault();
+
+            if (addedTshirt != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
 
         [HttpPut(nameof(UpdateTshirt))]

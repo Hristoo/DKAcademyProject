@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Kafka.Services;
+using ThirtStore.Models.Models;
 using TshirtStore.BL.Interfaces;
 using TshirtStore.BL.Services;
 using TshirtStore.DL.Interfaces;
@@ -13,6 +14,7 @@ namespace TshirtStore.Extentions
             services.AddSingleton<ITshirtRepository, TshirtSqlRepository>();
             services.AddSingleton<IClientRepository, ClientRepository>();
             services.AddSingleton<IOrderRepository, OrderSqlRepository>();
+            services.AddSingleton<IReportSqlRepository, ReportSqlRepository>();
 
             return services;
         }
@@ -20,6 +22,8 @@ namespace TshirtStore.Extentions
         public static IServiceCollection RegisterServices(this IServiceCollection services)
         {
             services.AddSingleton<ITshirtService, TshirtService>();
+            services.AddSingleton<Producer<int, Order>>();
+            services.AddHostedService<Consumer<int, Order>>();
 
             return services;
         }

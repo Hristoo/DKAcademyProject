@@ -18,9 +18,9 @@ namespace TshirtStore.BL.CommandHandlers
 
         public async Task<OrderResponse> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
         {
-            var order = await _orderRepository.GetOrderByClientId(request.orderRequest.ClientId);
+            var orders = await _orderRepository.GetOrderByClientId(request.orderRequest.ClientId);
 
-            if (order == null)
+            if (orders == null)
             {
                 return new OrderResponse()
                 {
@@ -28,8 +28,9 @@ namespace TshirtStore.BL.CommandHandlers
                     Message = "Order doesn't exist!"
                 };
             }
-                       
-            var result = await _orderRepository.UpdateOrder(order);
+
+            var LastOrder = orders.LastOrDefault();
+            var result = await _orderRepository.UpdateOrder(LastOrder);
 
             return new OrderResponse()
             {

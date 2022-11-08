@@ -1,7 +1,10 @@
-﻿using MediatR;
+﻿using Kafka.Services;
+using Confluent.Kafka;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ThirtStore.Models.Models.MediatR;
 using ThirtStore.Models.Models.Requests;
+using ThirtStore.Models.Models;
 
 namespace TshirtStore.Controllers
 {
@@ -11,20 +14,26 @@ namespace TshirtStore.Controllers
     {
         private readonly ILogger<OrderController> _logger;
         private readonly IMediator _mediator;
+        private readonly Producer<int, Order> _producer;
 
-        public OrderController(IMediator mediator, ILogger<OrderController> logger)
+        public OrderController(IMediator mediator, ILogger<OrderController> logger, Producer<int, Order> producer)
         {
             _mediator = mediator;
             _logger = logger;
+            _producer = producer;
         }
 
         [HttpPost(nameof(AddOrder))]
         public async Task<IActionResult> AddOrder([FromBody] OrderRequest orderRequest)
         {
-            var result = await _mediator.Send(new AddOrderCommand(orderRequest));
+            var result = await _mediator.Send(new AddOrderCommand(orderRequest));       
 
             if (result == null)
+            {
                 return BadRequest(result);
+            }
+
+            await _producer.SendMessage(result.Order.Id, result.Order);
 
             return Ok(result);
         }

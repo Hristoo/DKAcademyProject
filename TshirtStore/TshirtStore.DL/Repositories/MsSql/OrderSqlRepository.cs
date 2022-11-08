@@ -27,7 +27,7 @@ namespace TshirtStore.DL.Repositories.MsSql
                 {
                     await conn.OpenAsync();
 
-                    var result = await conn.ExecuteAsync("INSERT INTO [Order] (ClientId, LastUpdated, Sum) VALUES(@ClientId, @LastUpdated, @Sum)", order);
+                    var result = await conn.ExecuteAsync("INSERT INTO [Order] (ClientId, LastUpdated, Sum) output INSERTED.* VALUES(@ClientId, @LastUpdated, @Sum)", order);
                     return order;
                 }
             }
@@ -98,14 +98,14 @@ namespace TshirtStore.DL.Repositories.MsSql
             return null;
         }
 
-        public async Task<Order?> GetOrderByClientId(int clientId)
+        public async Task<List<Order>?> GetOrderByClientId(int clientId)
         {
             try
             {
                 await using (var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
                 {
                     await conn.OpenAsync();
-                    var result = await conn.QueryFirstOrDefaultAsync<Order>("SELECT * FROM [Order] WITH(NOLOCK) WHERE Id = @Id", new { Id = clientId });
+                    var result = await conn.QueryFirstOrDefaultAsync<List<Order>>("SELECT * FROM [Order] WITH(NOLOCK) WHERE Id = @Id", new { Id = clientId });
 
                     return result;
                 }

@@ -11,6 +11,7 @@ namespace TshirtStore.AutoMapper
             CreateMap<TshirtRequest, Tshirt>();
             CreateMap<ClientRequest, Client>();
             CreateMap<OrderRequest, Order>();
+            CreateMap<MonthlyReportRequest, MonthlyReport>();
         }
     }
 }
