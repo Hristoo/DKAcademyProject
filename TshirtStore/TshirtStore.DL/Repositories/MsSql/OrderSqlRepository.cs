@@ -28,6 +28,7 @@ namespace TshirtStore.DL.Repositories.MsSql
                     await conn.OpenAsync();
 
                     var result = await conn.ExecuteAsync("INSERT INTO [Order] (ClientId, LastUpdated, Sum) output INSERTED.* VALUES(@ClientId, @LastUpdated, @Sum)", order);
+                    
                     return order;
                 }
             }

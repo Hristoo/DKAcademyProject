@@ -13,5 +13,7 @@ namespace TshirtStore.DL.Interfaces
         public Task<Tshirt?> DeleteThirt(int tshirtId);
 
         public Task<Tshirt> UpdateThirt(Tshirt tshirt);
+
+        public Task<Tshirt> GetTshirtsById(int id);
     }
 }
