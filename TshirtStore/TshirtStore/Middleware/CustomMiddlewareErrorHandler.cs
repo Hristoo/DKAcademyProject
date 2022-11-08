@@ -13,7 +13,7 @@
 
         public async Task Invoke(HttpContext context)
         {
-            _logger.LogError($"HD *************** Error in {context.Request.Method}");
+            _logger.LogError($"Custom Error in {context.Request.Method}");
             await _next(context);
         }
     }

@@ -5,11 +5,15 @@ VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TshirtStore", "TshirtStore\TshirtStore.csproj", "{CF9CA75F-5AE0-4B25-87DC-ADAB8CB2A026}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThirtStore.Models", "ThirtStore.Models\ThirtStore.Models.csproj", "{D6C82A17-C019-4358-96C0-11AE520EBB5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThirtStore.Models", "ThirtStore.Models\ThirtStore.Models.csproj", "{D6C82A17-C019-4358-96C0-11AE520EBB5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TshirtStore.BL", "TshirtStore.BL\TshirtStore.BL.csproj", "{BD07B1BC-9116-4073-A1D2-D9D9093A15FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TshirtStore.BL", "TshirtStore.BL\TshirtStore.BL.csproj", "{BD07B1BC-9116-4073-A1D2-D9D9093A15FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TshirtStore.DL", "TshirtStore.DL\TshirtStore.DL.csproj", "{31A12BF2-F2EC-445C-B37E-F9BB874AF8F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TshirtStore.DL", "TshirtStore.DL\TshirtStore.DL.csproj", "{31A12BF2-F2EC-445C-B37E-F9BB874AF8F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kafka", "Kafka\Kafka.csproj", "{474BB587-2B94-4CCE-A5A6-C276B4E206E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TshirtStore.Tests", "TshirtStore.Tests\TshirtStore.Tests.csproj", "{F31BA445-472D-4EEA-A6AD-CF1AF3DDC9AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{31A12BF2-F2EC-445C-B37E-F9BB874AF8F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31A12BF2-F2EC-445C-B37E-F9BB874AF8F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31A12BF2-F2EC-445C-B37E-F9BB874AF8F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{474BB587-2B94-4CCE-A5A6-C276B4E206E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{474BB587-2B94-4CCE-A5A6-C276B4E206E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{474BB587-2B94-4CCE-A5A6-C276B4E206E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{474BB587-2B94-4CCE-A5A6-C276B4E206E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F31BA445-472D-4EEA-A6AD-CF1AF3DDC9AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F31BA445-472D-4EEA-A6AD-CF1AF3DDC9AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F31BA445-472D-4EEA-A6AD-CF1AF3DDC9AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F31BA445-472D-4EEA-A6AD-CF1AF3DDC9AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

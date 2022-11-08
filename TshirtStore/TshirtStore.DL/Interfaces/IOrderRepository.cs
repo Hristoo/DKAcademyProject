@@ -7,7 +7,7 @@ namespace TshirtStore.DL.Interfaces
         public Task<Order?> AddOrder(Order order);
         public Task<Order?> DeleteOrder(int orderId);
         public Task<Order?> GetOrderById(int id);
-        public Task<Order?> GetOrderByClientId(int id);
+        public Task<List<Order>?> GetOrderByClientId(int id);
         public Task<Order> UpdateOrder(Order order);
     }
 }

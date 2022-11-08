@@ -7,6 +7,7 @@ using TshirtStore.Middleware;
 using TshirtStore.HealthChecks;
 using MediatR;
 using TshirtStore.BL.CommandHandlers;
+using Kafka;
 
 var logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
@@ -17,6 +18,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 //serilog
 builder.Logging.AddSerilog(logger);
+
+// kafka settings
+builder.Services.Configure<KafkaSettings>(
+    builder.Configuration.GetSection(nameof(KafkaSettings)));
 
 // Add services to the container.
 builder.Services
