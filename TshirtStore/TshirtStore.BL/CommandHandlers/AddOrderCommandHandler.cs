@@ -53,6 +53,7 @@ namespace TshirtStore.BL.CommandHandlers
                 tshirt.Quantity -= orderTshirt.Quantity;
 
                 await _shirtRepository.UpdateThirt(tshirt);
+                order.Sum += tshirt.Price;
             }
 
             var result = _orderRepository.AddOrder(order);

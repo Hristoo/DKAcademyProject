@@ -8,6 +8,7 @@ using TshirtStore.HealthChecks;
 using MediatR;
 using TshirtStore.BL.CommandHandlers;
 using Kafka;
+using ThirtStore.Models.Models.Configurations;
 
 var logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
@@ -22,6 +23,10 @@ builder.Logging.AddSerilog(logger);
 // kafka settings
 builder.Services.Configure<KafkaSettings>(
     builder.Configuration.GetSection(nameof(KafkaSettings)));
+
+//MongoDB settings
+builder.Services.Configure<MongoDbConfiguration>(
+    builder.Configuration.GetSection(nameof(MongoDbConfiguration)));
 
 // Add services to the container.
 builder.Services
@@ -44,8 +49,7 @@ builder.Services.AddSwaggerGen();
 
 // Health Checks
 builder.Services.AddHealthChecks()
-    .AddCheck<CustomExeption>("Custom Check");
-    //.AddUrlGroup(new Uri("https://google.com"), name: "Google Service");
+    .AddCheck<SqlHealthCheck>("Sql Check");
 
 var app = builder.Build();
 
