@@ -13,5 +13,7 @@ namespace ThirtStore.Models.Models
         public DateTime LastUpdated { get; set; }
         [Key(3)]
         public decimal Sum { get; set; }
+        [Key(4)]
+        public List<Tshirt> Tshirts { get; set; }
     }
 }

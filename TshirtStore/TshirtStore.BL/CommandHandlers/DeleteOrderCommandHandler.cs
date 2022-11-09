@@ -40,6 +40,7 @@ namespace TshirtStore.BL.CommandHandlers
             {
                 Order = order,
                 HttpStatusCode = System.Net.HttpStatusCode.OK,
+                Message = "Order was deleted successfully!",
             };
         }
     }

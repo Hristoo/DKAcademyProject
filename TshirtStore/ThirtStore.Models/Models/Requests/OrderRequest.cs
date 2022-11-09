@@ -7,5 +7,7 @@
         public DateTime LastUpdated { get; set; }
 
         public decimal Sum { get; set; }
+
+        public List<Tshirt> Tshirts { get; set; }
     }
 }

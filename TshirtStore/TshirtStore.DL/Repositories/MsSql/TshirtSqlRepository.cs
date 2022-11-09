@@ -58,6 +58,25 @@ namespace TshirtStore.DL.Repositories.MsSql
             return null;
         }
 
+        public async Task<Tshirt> GetTshirtsById(int id)
+        {
+            try
+            {
+                await using (var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+                {
+                    await conn.OpenAsync();
+
+                    return await conn.QueryFirstOrDefaultAsync<Tshirt>("SELECT * FROM Tshirt WITH(NOLOCK)WHERE Id = @Id", new { Id = id });
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error in {nameof(GetAllTshirts)}: {e.Message}", e.Message);
+            }
+
+            return null;
+        }
+
         public async Task<IEnumerable<Tshirt>> GetAllTshirts()
         {
             try
@@ -85,7 +104,7 @@ namespace TshirtStore.DL.Repositories.MsSql
                 {
                     await conn.OpenAsync();
 
-                    var result = await conn.ExecuteAsync("UPDATE Tshirt SET Color = @Color,  Size = @Size, Price = @Price WHERE Id = @Id", tshirt);
+                    var result = await conn.ExecuteAsync("UPDATE Tshirt SET Color = @Color,  Size = @Size, Price = @Price, Quantity = @Quantity WHERE Id = @Id", tshirt);
                     return tshirt;
                 }
 

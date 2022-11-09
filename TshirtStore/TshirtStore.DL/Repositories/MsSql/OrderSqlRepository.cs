@@ -28,6 +28,7 @@ namespace TshirtStore.DL.Repositories.MsSql
                     await conn.OpenAsync();
 
                     var result = await conn.ExecuteAsync("INSERT INTO [Order] (ClientId, LastUpdated, Sum) output INSERTED.* VALUES(@ClientId, @LastUpdated, @Sum)", order);
+                    
                     return order;
                 }
             }
@@ -86,7 +87,7 @@ namespace TshirtStore.DL.Repositories.MsSql
                 await using (var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
                 {
                     await conn.OpenAsync();
-                    await conn.ExecuteAsync("UPDATE Order SET ClientId = @ClientId, LastUpdate = @LastUpdate, Sum = @Sum WHERE Id = @Id", order);
+                    await conn.ExecuteAsync("UPDATE [Order] SET ClientId = @ClientId, LastUpdated = @LastUpdated, Sum = @Sum WHERE Id = @Id", order);
 
                     return order;
                 }
