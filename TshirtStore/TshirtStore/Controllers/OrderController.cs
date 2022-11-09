@@ -28,7 +28,7 @@ namespace TshirtStore.Controllers
         {
             var result = await _mediator.Send(new AddOrderCommand(orderRequest));       
 
-            if (result == null)
+            if (result.Order == null)
             {
                 return BadRequest(result);
             }
@@ -54,6 +54,17 @@ namespace TshirtStore.Controllers
         public async Task<IActionResult> GetOrderById(int orderId)
         {
             var result = await _mediator.Send(new GetOrderByIdCommand(orderId));
+
+            if (result == null)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        [HttpPut(nameof(UpdateOrder))]
+        public async Task<IActionResult> UpdateOrder([FromBody] Order order)
+        {
+            var result = await _mediator.Send(new UpdateOrderCommand(order));
 
             if (result == null)
                 return BadRequest(result);

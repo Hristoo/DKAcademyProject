@@ -25,7 +25,7 @@ namespace TshirtStore.BL.CommandHandlers
         public async Task<OrderResponse> Handle(AddOrderCommand request, CancellationToken cancellationToken)
         {
             var order = _mapper.Map<Order>(request.orderRequest);
-            var isClientExist = _clientRepository.GetById(order.ClientId);
+            var isClientExist = await _clientRepository.GetById(order.ClientId);
             var tshirts = order.Tshirts;
 
             foreach (var orderTshirt in tshirts)

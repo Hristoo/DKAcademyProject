@@ -18,9 +18,9 @@ namespace TshirtStore.BL.CommandHandlers
 
         public async Task<OrderResponse> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
         {
-            var orders = await _orderRepository.GetOrderByClientId(request.orderRequest.ClientId);
+            var order = await _orderRepository.GetOrderById(request.order.Id);
 
-            if (orders == null)
+            if (order == null)
             {
                 return new OrderResponse()
                 {
@@ -29,8 +29,7 @@ namespace TshirtStore.BL.CommandHandlers
                 };
             }
 
-            var LastOrder = orders.LastOrDefault();
-            var result = await _orderRepository.UpdateOrder(LastOrder);
+            var result = await _orderRepository.UpdateOrder(request.order);
 
             return new OrderResponse()
             {
