@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Kafka\Kafka.csproj" />
     <ProjectReference Include="..\ThirtStore.Models\ThirtStore.Models.csproj" />
     <ProjectReference Include="..\TshirtStore.DL\TshirtStore.DL.csproj" />
   </ItemGroup>

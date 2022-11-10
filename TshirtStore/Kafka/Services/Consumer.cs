@@ -54,6 +54,7 @@ namespace Kafka.Services
                     {
                         Month = currentMonth,
                         Incomes = incomes + result.Sum,
+                        Updated = DateTime.UtcNow
                     };
 
                     if (incomes > 0)
