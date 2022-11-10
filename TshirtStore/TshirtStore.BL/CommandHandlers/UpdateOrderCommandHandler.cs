@@ -10,10 +10,12 @@ namespace TshirtStore.BL.CommandHandlers
     public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, OrderResponse>
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly ITshirtRepository _shirtRepository;
 
-        public UpdateOrderCommandHandler(IOrderRepository orderRepository)
+        public UpdateOrderCommandHandler(IOrderRepository orderRepository, ITshirtRepository shirtRepository)
         {
             _orderRepository = orderRepository;
+            _shirtRepository = shirtRepository;
         }
 
         public async Task<OrderResponse> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
@@ -27,6 +29,37 @@ namespace TshirtStore.BL.CommandHandlers
                     HttpStatusCode = System.Net.HttpStatusCode.BadRequest,
                     Message = "Order doesn't exist!"
                 };
+            }
+
+            var tshirts = request.order.Tshirts;
+            request.order.Sum = 0;
+
+            foreach (var orderTshirt in tshirts)
+            {
+                var tshirt = await _shirtRepository.GetTshirtsById(orderTshirt.Id);
+
+                if (tshirt == null)
+                {
+                    return new OrderResponse()
+                    {
+                        HttpStatusCode = System.Net.HttpStatusCode.BadRequest,
+                        Message = $"{tshirt.Name} missing in DB!"
+                    };
+                }
+
+                if (tshirt.Quantity < orderTshirt.Quantity)
+                {
+                    return new OrderResponse()
+                    {
+                        HttpStatusCode = System.Net.HttpStatusCode.BadRequest,
+                        Message = $"No enough quantity {tshirt.Name} tshirts! Try again later!"
+                    };
+                }
+
+                tshirt.Quantity -= orderTshirt.Quantity;
+
+                await _shirtRepository.UpdateThirt(tshirt);
+                request.order.Sum += (tshirt.Price * orderTshirt.Quantity);
             }
 
             var result = await _orderRepository.UpdateOrder(request.order);

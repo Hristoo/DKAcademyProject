@@ -4,14 +4,12 @@ namespace TshirtStore.DL.Interfaces
 {
     public interface IShoppingCartRepository
     {
-        Task<IEnumerable<ShoppingCart>> GetContent(int clientId);
+        Task<ShoppingCart> GetContent(int clientId);
 
-        Task<ShoppingCart?> AddToCart(Tshirt tshirt);
+        Task AddToCart(Tshirt tshirt, int clientId);
 
-        Task<ShoppingCart?> RemoveFromCart(Tshirt tshirt);
+        Task RemoveFromCart(Tshirt tshirt, int clientId);
 
-        Task<ShoppingCart?> EmptyCart();
-
-        Task<ShoppingCart?> FinishOrder(Tshirt tshirt);
+        Task EmptyCart(Guid id);
     }
 }

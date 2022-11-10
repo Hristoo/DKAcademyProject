@@ -27,7 +27,7 @@ namespace TshirtStore.DL.Repositories.MsSql
                 {
                     await conn.OpenAsync();
 
-                    var result = await conn.ExecuteAsync("INSERT INTO [MonthlyReport] (Month, Incomes) output INSERTED.* VALUES(@Month, @Incomes)", report);
+                    var result = await conn.ExecuteAsync("INSERT INTO [MonthlyReport] (Month, Incomes, Updated) output INSERTED.* VALUES(@Month, @Incomes, @Updated)", report);
                     return report;
                 }
             }
@@ -46,7 +46,7 @@ namespace TshirtStore.DL.Repositories.MsSql
                 await using (var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
                 {
                     await conn.OpenAsync();
-                    var result = await conn.ExecuteAsync("UPDATE MonthlyReport SET Incomes = @Incomes", report);
+                    var result = await conn.ExecuteAsync("UPDATE MonthlyReport SET Incomes = @Incomes, Updated = @Updated", report);
 
                     return report;
                 }

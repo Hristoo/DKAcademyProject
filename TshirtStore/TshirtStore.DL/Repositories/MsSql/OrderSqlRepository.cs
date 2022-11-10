@@ -28,7 +28,7 @@ namespace TshirtStore.DL.Repositories.MsSql
                     await conn.OpenAsync();
                     var result = await conn.QueryFirstOrDefaultAsync<Order>("INSERT INTO [Order] (ClientId, LastUpdated, Sum) output INSERTED.* VALUES(@ClientId, @LastUpdated, @Sum)", order);
                     order.Id = result.Id;
-                    result = await LinkOrderAndTshirts(order);
+                    result = await AddOrderAndTshirts(order);
 
                     return result;
                 }
@@ -49,7 +49,9 @@ namespace TshirtStore.DL.Repositories.MsSql
                 {
                     await conn.OpenAsync();
 
+                    var order = await GetOrderById(orderId);
                     var result = await conn.QueryFirstOrDefaultAsync<Order>("DELETE FROM [Order] output DELETED.* WHERE Id = @Id", new { Id = orderId });
+                    await DeleteOrderAndTshirts(order);
 
                     return result;
                 }
@@ -91,7 +93,8 @@ namespace TshirtStore.DL.Repositories.MsSql
                 await using (var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
                 {
                     await conn.OpenAsync();
-                    await conn.ExecuteAsync("UPDATE [Order] SET ClientId = @ClientId, LastUpdated = @LastUpdated, Sum = @Sum WHERE Id = @Id", order);
+                    var result = await conn.ExecuteAsync("UPDATE [Order] SET ClientId = @ClientId, LastUpdated = @LastUpdated, Sum = @Sum WHERE Id = @Id", order);
+                    await UpdateOrderAndTshirts(order);
 
                     return order;
                 }
@@ -122,8 +125,10 @@ namespace TshirtStore.DL.Repositories.MsSql
 
             return null;
         }
-        public async Task<Order?> LinkOrderAndTshirts(Order order)
+        public async Task<Order?> AddOrderAndTshirts(Order order)
         {
+            var query = "INSERT INTO [OrdersAndTshirts] (OrderId, TshirtId) output INSERTED.* VALUES(@OrderId, @TshirtId)";
+
             try
             {
                 await using (var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
@@ -132,7 +137,7 @@ namespace TshirtStore.DL.Repositories.MsSql
 
                     foreach (var tshirt in order.Tshirts)
                     {
-                        var addOrderTshirts = await conn.ExecuteAsync("INSERT INTO [OrdersAndTshirts] (OrderId, TshirtId) output INSERTED.* VALUES(@OrderId, @TshirtId)", new { OrderId = order.Id, TshirtId = tshirt.Id });
+                        var addOrderTshirts = await conn.ExecuteAsync(query, new { OrderId = order.Id, TshirtId = tshirt.Id });
                     }
 
                     return order;
@@ -140,7 +145,53 @@ namespace TshirtStore.DL.Repositories.MsSql
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error in {nameof(LinkOrderAndTshirts)}: {e.Message}", e.Message);
+                _logger.LogError($"Error in {nameof(AddOrderAndTshirts)}: {e.Message}", e.Message);
+            }
+            return null;
+        }
+
+        public async Task<Order?> DeleteOrderAndTshirts(Order order)
+        {
+            var query = "DELETE FROM [OrdersAndTshirts] output DELETED.* WHERE OrderId = @OrderId";
+
+            try
+            {
+                await using (var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+                {
+                    await conn.OpenAsync();
+
+                    foreach (var tshirt in order.Tshirts)
+                    {
+                        var addOrderTshirts = await conn.ExecuteAsync(query, new { OrderId = order.Id });
+                    }
+
+                    return order;
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error in {nameof(DeleteOrderAndTshirts)}: {e.Message}", e.Message);
+            }
+            return null;
+        }
+
+        public async Task<Order?> UpdateOrderAndTshirts(Order order)
+        {
+            try
+            {
+                var delete = await DeleteOrderAndTshirts(order);
+
+                if (delete != null)
+                {
+                    var update = await AddOrderAndTshirts(order);
+
+                    return update;
+                }
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error in {nameof(DeleteOrderAndTshirts)}: {e.Message}", e.Message);
             }
             return null;
         }

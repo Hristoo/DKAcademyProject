@@ -14,29 +14,24 @@ namespace TshirtStore.BL.Services
             _shoppingCartRepository = shoppingCartRepository;
         }
 
-        public  Task AddToCart(Tshirt tshirt)
+        public async Task AddToCart(Tshirt tshirt, int clientId)
         {
-            return  _shoppingCartRepository.AddToCart(tshirt);
+            await _shoppingCartRepository.AddToCart(tshirt, clientId);
         }
 
-        public  Task EmptyCart()
+        public async Task EmptyCart(Guid id)
         {
-           return _shoppingCartRepository.EmptyCart();
+           await _shoppingCartRepository.EmptyCart(id);
         }
 
-        public Task<ShoppingCart> FinishOrder(Tshirt tshirt)
-        {
-            return _shoppingCartRepository.FinishOrder(tshirt);
-        }
-
-        public Task<IEnumerable<ShoppingCart>> GetContent(int clientId)
+        public Task<ShoppingCart> GetContent(int clientId)
         {
             return _shoppingCartRepository.GetContent(clientId);
         }
 
-        public Task RemoveFromCart(Tshirt tshirt)
+        public async Task RemoveFromCart(Tshirt tshirt, int clientId)
         {
-            return _shoppingCartRepository.RemoveFromCart(tshirt);
+            await _shoppingCartRepository.RemoveFromCart(tshirt, clientId);
         }
     }
 }

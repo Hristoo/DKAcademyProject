@@ -14,26 +14,22 @@ namespace TshirtStore.Controllers
     {
         private readonly ILogger<OrderController> _logger;
         private readonly IMediator _mediator;
-        private readonly Producer<int, Order> _producer;
 
-        public OrderController(IMediator mediator, ILogger<OrderController> logger, Producer<int, Order> producer)
+        public OrderController(IMediator mediator, ILogger<OrderController> logger)
         {
             _mediator = mediator;
             _logger = logger;
-            _producer = producer;
         }
 
         [HttpPost(nameof(AddOrder))]
-        public async Task<IActionResult> AddOrder([FromBody] OrderRequest orderRequest)
+        public async Task<IActionResult> AddOrder([FromBody] int clientId)
         {
-            var result = await _mediator.Send(new AddOrderCommand(orderRequest));       
+            var result = await _mediator.Send(new AddOrderCommand(clientId));       
 
             if (result.Order == null)
             {
                 return BadRequest(result);
             }
-
-            await _producer.SendMessage(result.Order.Id, result.Order);
 
             return Ok(result);
         }

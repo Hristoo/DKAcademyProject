@@ -26,32 +26,41 @@ namespace TshirtStore.DL.Repositories.MondoDB
             _shoppingCartCollection = _database.GetCollection<ShoppingCart>(_mongoDbConfiguration.CurrentValue.DataBaseCollection);
         }
 
-        public async Task<ShoppingCart?> AddToCart(Tshirt tshirt)
+        public async Task AddToCart(Tshirt tshirt, int clientId)
         {
             _shoppingCart.Tshirts.Add(tshirt);
-            _shoppingCart.ClientId = 1;
-            await _shoppingCartCollection.InsertOneAsync(_shoppingCart);
-            return _shoppingCart;
+            _shoppingCart.ClientId = clientId;
+            var clientCart = await GetContent(_shoppingCart.ClientId);
+
+            if (clientCart == null)
+            {
+                await _shoppingCartCollection.InsertOneAsync(_shoppingCart);
+            }
+            else
+            {
+                clientCart.Tshirts.Add(tshirt);
+                await _shoppingCartCollection.ReplaceOneAsync(x => x.ClientId == _shoppingCart.ClientId, clientCart);
+            }
         }
 
-        public Task<ShoppingCart?> EmptyCart()
+        public async Task EmptyCart(Guid id)
         {
-            throw new NotImplementedException();
+            var deleteCart = await _shoppingCartCollection.DeleteOneAsync(x => x.Id == id);
         }
 
-        public Task<ShoppingCart?> FinishOrder(Tshirt tshirt)
+        public async Task<ShoppingCart> GetContent(int clientId)
         {
-            throw new NotImplementedException();
+            var test = await _shoppingCartCollection.FindAsync(x => x.ClientId == clientId);
+            return await test.FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<ShoppingCart>> GetContent(int clientId)
+        public async Task RemoveFromCart(Tshirt tshirt, int clientId)
         {
-            return (await _shoppingCartCollection.FindAsync(x => x.ClientId == clientId)).ToList();
-        }
+            var clientCart = await GetContent(clientId);
+            var delTshirt = clientCart.Tshirts.FirstOrDefault(x => x.Id == tshirt.Id);
+            clientCart.Tshirts.Remove(delTshirt);
 
-        public Task<ShoppingCart?> RemoveFromCart(Tshirt tshirt)
-        {
-            throw new NotImplementedException();
+            await _shoppingCartCollection.ReplaceOneAsync(x => x.Id == clientCart.Id, clientCart);
         }
     }
 }

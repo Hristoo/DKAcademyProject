@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Kafka.Services;
 using MediatR;
 using ThirtStore.Models.Models;
 using ThirtStore.Models.Models.MediatR;
@@ -13,22 +14,31 @@ namespace TshirtStore.BL.CommandHandlers
         private readonly IClientRepository _clientRepository;
         private readonly ITshirtRepository _shirtRepository;
         private readonly IMapper _mapper;
+        private readonly Producer<int, Order> _producer;
+        private readonly IShoppingCartRepository _shoppingCartRepository;
 
-        public AddOrderCommandHandler(IOrderRepository orderRepository, IMapper mapper, IClientRepository clientRepository, ITshirtRepository shirtRepository)
+        public AddOrderCommandHandler(IOrderRepository orderRepository, IMapper mapper, IClientRepository clientRepository, ITshirtRepository shirtRepository, Producer<int, Order> producer, IShoppingCartRepository shoppingCartRepository)
         {
             _orderRepository = orderRepository;
             _mapper = mapper;
             _clientRepository = clientRepository;
             _shirtRepository = shirtRepository;
+            _producer = producer;
+            _shoppingCartRepository = shoppingCartRepository;
         }
 
         public async Task<OrderResponse> Handle(AddOrderCommand request, CancellationToken cancellationToken)
         {
-            var order = _mapper.Map<Order>(request.orderRequest);
-            var isClientExist = await _clientRepository.GetById(order.ClientId);
-            var tshirts = order.Tshirts;
+            var cart = await _shoppingCartRepository.GetContent(request.clientId);
+            var isClientExist = await _clientRepository.GetById(request.clientId);
+            var order = new Order() { 
+                Sum = 0,
+                ClientId = cart.ClientId,
+                LastUpdated = DateTime.UtcNow, 
+                Tshirts = cart.Tshirts,
+            };
 
-            foreach (var orderTshirt in tshirts)
+            foreach (var orderTshirt in cart.Tshirts)
             {
                 var tshirt = await _shirtRepository.GetTshirtsById(orderTshirt.Id);
 
@@ -53,10 +63,12 @@ namespace TshirtStore.BL.CommandHandlers
                 tshirt.Quantity -= orderTshirt.Quantity;
 
                 await _shirtRepository.UpdateThirt(tshirt);
-                order.Sum += tshirt.Price;
+                order.Sum += (tshirt.Price * orderTshirt.Quantity);
             }
 
-            var result = _orderRepository.AddOrder(order);
+            var result = await _orderRepository.AddOrder(order);
+
+            await _producer.SendMessage(result.Id, result);
 
             if (result == null || isClientExist == null)
             {
@@ -66,6 +78,8 @@ namespace TshirtStore.BL.CommandHandlers
                     Message = "Something went wrong! Order wasn't added!"
                 };
             }
+
+            await _shoppingCartRepository.EmptyCart(cart.Id);
 
             return new OrderResponse()
             {

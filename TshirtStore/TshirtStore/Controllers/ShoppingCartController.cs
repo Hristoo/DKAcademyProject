@@ -16,15 +16,30 @@ namespace TshirtStore.Controllers
         }
 
         [HttpPost(nameof(AddToCart))]
-        public async Task<IActionResult> AddToCart(Tshirt tshirt)
+        public async Task<IActionResult> AddToCart(Tshirt tshirt, int clientId)
         {
-            return Ok(_shoppingCartService.AddToCart(tshirt));
+            await _shoppingCartService.AddToCart(tshirt, clientId);
+            return Ok();
         }
 
         [HttpGet(nameof(GetContent))]
         public async Task<IActionResult> GetContent(int clientId)
         {
-            return Ok(_shoppingCartService.GetContent(clientId));
+            return Ok(await _shoppingCartService.GetContent(clientId));
+        }
+
+        [HttpDelete(nameof(EmptyCart))]
+        public async Task<IActionResult> EmptyCart(Guid id)
+        {
+            await _shoppingCartService.EmptyCart(id);
+            return Ok();
+        }
+
+        [HttpPut(nameof(RemoveFromCart))]
+        public async Task<IActionResult> RemoveFromCart(Tshirt tshirt, int clientId)
+        {
+            await _shoppingCartService.RemoveFromCart(tshirt, clientId);
+            return Ok();
         }
     }
 }
