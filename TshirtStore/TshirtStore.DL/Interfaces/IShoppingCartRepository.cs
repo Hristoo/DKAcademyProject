@@ -6,7 +6,9 @@ namespace TshirtStore.DL.Interfaces
     {
         Task<ShoppingCart> GetContent(int clientId);
 
-        Task AddToCart(Tshirt tshirt, int clientId);
+        Task AddCart(ShoppingCart cart);
+
+        Task UpdateCart(ShoppingCart newCart);
 
         Task RemoveFromCart(Tshirt tshirt, int clientId);
 
