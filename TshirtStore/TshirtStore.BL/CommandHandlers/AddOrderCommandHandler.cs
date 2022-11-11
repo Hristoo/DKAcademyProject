@@ -32,6 +32,16 @@ namespace TshirtStore.BL.CommandHandlers
         {
             var cart = await _shoppingCartRepository.GetContent(request.clientId);
             var isClientExist = await _clientRepository.GetById(request.clientId);
+
+            if (isClientExist == null)
+            {
+                return new OrderResponse()
+                {
+                    HttpStatusCode = System.Net.HttpStatusCode.BadRequest,
+                    Message = "Invalid client!"
+                };
+            }
+
             var order = new Order() { 
                 Sum = 0,
                 ClientId = cart.ClientId,
@@ -69,9 +79,7 @@ namespace TshirtStore.BL.CommandHandlers
 
             var result = await _orderRepository.AddOrder(order);
 
-            await _producer.SendMessage(result.Id, result);
-
-            if (result == null || isClientExist == null)
+            if (result == null )
             {
                 return new OrderResponse()
                 {
@@ -80,6 +88,7 @@ namespace TshirtStore.BL.CommandHandlers
                 };
             }
 
+            await _producer.SendMessage(result.Id, result);
             await _shoppingCartRepository.EmptyCart(cart.Id);
 
             return new OrderResponse()
