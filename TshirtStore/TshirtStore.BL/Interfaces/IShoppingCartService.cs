@@ -1,4 +1,6 @@
 ﻿using ThirtStore.Models.Models;
+using ThirtStore.Models.Models.Requests;
+using ThirtStore.Models.Models.Responses;
 
 namespace TshirtStore.BL.Interfaces
 {
@@ -6,7 +8,7 @@ namespace TshirtStore.BL.Interfaces
     {
         Task<ShoppingCart> GetContent(int clientId);
 
-        Task AddToCart(Tshirt tshirt, int clientId );
+        Task<ShoppingCartResponse> AddToCart(ShoppingCartRequest cart);
 
         Task RemoveFromCart(Tshirt tshirt, int clientId);
 

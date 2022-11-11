@@ -10,9 +10,10 @@ namespace TshirtStore.Validators.OrderValidators
             RuleFor(x => x.ClientId)
                 .NotNull()
                 .WithMessage("Client id is requred!");
-            RuleFor(x => x.Sum)
-                .GreaterThan(0)
-                .WithMessage("The sum must be greater '0'");
+            RuleFor(x => x.Sum).GreaterThan(0);
+            RuleFor(x => x.Tshirts)
+                .NotNull();
+            RuleFor(x => x.ClientId).NotEmpty();
         }
     }
 }
