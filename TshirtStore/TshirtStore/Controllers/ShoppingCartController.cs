@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ThirtStore.Models.Models;
+using ThirtStore.Models.Models.Requests;
 using TshirtStore.BL.Interfaces;
 
 namespace TshirtStore.Controllers
@@ -16,10 +17,9 @@ namespace TshirtStore.Controllers
         }
 
         [HttpPost(nameof(AddToCart))]
-        public async Task<IActionResult> AddToCart(Tshirt tshirt, int clientId)
+        public async Task<IActionResult> AddToCart(ShoppingCartRequest cart)
         {
-            await _shoppingCartService.AddToCart(tshirt, clientId);
-            return Ok();
+            return Ok(await _shoppingCartService.AddToCart(cart));
         }
 
         [HttpGet(nameof(GetContent))]
