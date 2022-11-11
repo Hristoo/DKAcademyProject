@@ -1,4 +1,5 @@
-﻿using Kafka.Services;
+﻿using Kafka.Interfaces;
+using Kafka.Services;
 using ThirtStore.Models.Models;
 using TshirtStore.BL.Interfaces;
 using TshirtStore.BL.Services;
@@ -25,7 +26,7 @@ namespace TshirtStore.Extentions
         {
             services.AddSingleton<ITshirtService, TshirtService>();
             services.AddSingleton<IShoppingCartService, ShoppingCartService>();
-            services.AddSingleton<Producer<int, Order>>();
+            services.AddSingleton<IGenericProducer<int, Order>, Producer<int, Order>>();
             services.AddHostedService<Consumer<int, Order>>();
 
             return services;

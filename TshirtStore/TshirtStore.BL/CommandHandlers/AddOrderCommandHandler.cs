@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Kafka.Interfaces;
 using Kafka.Services;
 using MediatR;
 using ThirtStore.Models.Models;
@@ -12,17 +13,17 @@ namespace TshirtStore.BL.CommandHandlers
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IClientRepository _clientRepository;
-        private readonly ITshirtRepository _shirtRepository;
+        private readonly ITshirtRepository _tshirtRepository;
         private readonly IMapper _mapper;
-        private readonly Producer<int, Order> _producer;
+        private readonly IGenericProducer<int, Order> _producer;
         private readonly IShoppingCartRepository _shoppingCartRepository;
 
-        public AddOrderCommandHandler(IOrderRepository orderRepository, IMapper mapper, IClientRepository clientRepository, ITshirtRepository shirtRepository, Producer<int, Order> producer, IShoppingCartRepository shoppingCartRepository)
+        public AddOrderCommandHandler(IOrderRepository orderRepository, IMapper mapper, IClientRepository clientRepository, ITshirtRepository shirtRepository, IGenericProducer<int, Order> producer, IShoppingCartRepository shoppingCartRepository)
         {
             _orderRepository = orderRepository;
             _mapper = mapper;
             _clientRepository = clientRepository;
-            _shirtRepository = shirtRepository;
+            _tshirtRepository = shirtRepository;
             _producer = producer;
             _shoppingCartRepository = shoppingCartRepository;
         }
@@ -40,7 +41,7 @@ namespace TshirtStore.BL.CommandHandlers
 
             foreach (var orderTshirt in cart.Tshirts)
             {
-                var tshirt = await _shirtRepository.GetTshirtsById(orderTshirt.Id);
+                var tshirt = await _tshirtRepository.GetTshirtsById(orderTshirt.Id);
 
                 if (tshirt == null)
                 {
@@ -62,7 +63,7 @@ namespace TshirtStore.BL.CommandHandlers
 
                 tshirt.Quantity -= orderTshirt.Quantity;
 
-                await _shirtRepository.UpdateThirt(tshirt);
+                await _tshirtRepository.UpdateThirt(tshirt);
                 order.Sum += (tshirt.Price * orderTshirt.Quantity);
             }
 

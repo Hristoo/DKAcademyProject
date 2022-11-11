@@ -1,10 +1,11 @@
 ﻿using Confluent.Kafka;
+using Kafka.Interfaces;
 using Kafka.Serializators;
 using Microsoft.Extensions.Options;
 
 namespace Kafka.Services
 {
-    public class Producer<TKey, TValue>
+    public class Producer<TKey, TValue> : IGenericProducer<TKey, TValue>
     {
         private readonly IOptionsMonitor<KafkaSettings> _settings;
         private readonly IProducer<TKey, TValue> _producer;

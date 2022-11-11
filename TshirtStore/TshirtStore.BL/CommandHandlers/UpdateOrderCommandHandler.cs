@@ -10,12 +10,12 @@ namespace TshirtStore.BL.CommandHandlers
     public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, OrderResponse>
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly ITshirtRepository _shirtRepository;
+        private readonly ITshirtRepository _tshirtRepository;
 
         public UpdateOrderCommandHandler(IOrderRepository orderRepository, ITshirtRepository shirtRepository)
         {
             _orderRepository = orderRepository;
-            _shirtRepository = shirtRepository;
+            _tshirtRepository = shirtRepository;
         }
 
         public async Task<OrderResponse> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
@@ -36,14 +36,14 @@ namespace TshirtStore.BL.CommandHandlers
 
             foreach (var orderTshirt in tshirts)
             {
-                var tshirt = await _shirtRepository.GetTshirtsById(orderTshirt.Id);
+                var tshirt = await _tshirtRepository.GetTshirtsById(orderTshirt.Id);
 
                 if (tshirt == null)
                 {
                     return new OrderResponse()
                     {
                         HttpStatusCode = System.Net.HttpStatusCode.BadRequest,
-                        Message = $"{tshirt.Name} missing in DB!"
+                        Message = $"{orderTshirt.Name} missing in DB!"
                     };
                 }
 
@@ -58,7 +58,7 @@ namespace TshirtStore.BL.CommandHandlers
 
                 tshirt.Quantity -= orderTshirt.Quantity;
 
-                await _shirtRepository.UpdateThirt(tshirt);
+                await _tshirtRepository.UpdateThirt(tshirt);
                 request.order.Sum += (tshirt.Price * orderTshirt.Quantity);
             }
 
