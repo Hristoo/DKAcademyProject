@@ -1,9 +1,7 @@
-﻿using System.Security.Cryptography;
-using System.Threading.Tasks.Dataflow;
+﻿using System.Threading.Tasks.Dataflow;
 using AutoMapper;
 using Confluent.Kafka;
 using Kafka.Serializators;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using ThirtStore.Models.Models;
